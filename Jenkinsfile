@@ -6,13 +6,13 @@ node {
         }
     }
     stage('Test') {
-        checkout scm
+        //checkout scm
         docker.image('qnib/pytest').inside {
             sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
         }
         junit 'test-reports/results.xml'
     }
-    stage('Deploy') {
+/*     stage('Deploy') {
         checkout scm
         docker.image('python:3.9').inside('-u root') {
             sh 'pip install pyinstaller'
@@ -21,5 +21,5 @@ node {
             echo 'Pipeline has finished successfully.'
         }
         archiveArtifacts artifacts: 'dist/add2vals', onlyIfSuccessful: true
-    }
+    } */
 }
