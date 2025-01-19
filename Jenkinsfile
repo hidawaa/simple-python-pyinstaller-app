@@ -14,13 +14,21 @@ node {
     }
     stage('Deploy') {
         checkout scm
-        docker.image('cdrx/pyinstaller-linux:python2').inside {
-            sh 'pyinstaller --onefile sources/add2vals.py'
+        def volume = "${pwd()}/sources:/src"
+        def image = 'cdrx/pyinstaller-linux:python2'
+        
+        dir(env.BUILD_ID) {
+            unstash name: 'compiled-results'
+            
+            sh """
+                docker run --rm -v ${volume} ${image} sh -c 'pyinstaller -F /src/add2vals.py'
+            """
         }
-        post {
-            success {
-                archiveArtifacts artifacts: 'dist/add2vals', onlyIfSuccessful: true
-            }
-        }
+
+        archiveArtifacts artifacts: 'sources/dist/add2vals', onlyIfSuccessful: true
+
+        sh """
+            docker run --rm -v ${volume} ${image} sh -c 'rm -rf /src/build /src/dist'
+        """
     }
 }
