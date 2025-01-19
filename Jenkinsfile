@@ -1,7 +1,7 @@
 node {
     stage('Build') {
         checkout scm
-        docker.image('python:2-alpine').inside {
+        docker.image('python:3.13.1-alpine3.21').inside {
             sh 'python -m py_compile sources/add2vals.py sources/calc.py'
         }
     }
@@ -12,9 +12,8 @@ node {
         junit 'test-reports/results.xml'
     }
     stage('Deploy') {
-        docker.image('cdrx/pyinstaller-linux:python2').inside {
+        docker.image('batonogov/pyinstaller-linux').inside {
             sh 'pyinstaller --onefile sources/add2vals.py'
-            sh 'sleep 10'
         }
         post {
             success {
