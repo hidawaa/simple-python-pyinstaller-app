@@ -14,21 +14,12 @@ node {
     }
     stage('Deploy') {
         checkout scm
-        def volume = "${pwd()}/sources:/src"
-        def image = 'cdrx/pyinstaller-linux:python2'
-        
-        dir(env.BUILD_ID) {
-            unstash name: 'compiled-results'
-            
-            sh """
-                docker run --rm -v ${volume} ${image} sh -c 'pyinstaller -F /src/add2vals.py'
-            """
+        docker.image('python:3.9').inside('-u root') {
+            sh 'pip install pyinstaller'
+            sh 'pyinstaller --onefile sources/add2vals.py'
+            sleep 60
+            echo 'Pipeline has finished successfully.'
         }
-
-        archiveArtifacts artifacts: 'sources/dist/add2vals', onlyIfSuccessful: true
-
-        sh """
-            docker run --rm -v ${volume} ${image} sh -c 'rm -rf /src/build /src/dist'
-        """
+        archiveArtifacts artifacts: 'dist/add2vals', onlyIfSuccessful: true
     }
 }
