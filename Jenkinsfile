@@ -6,20 +6,21 @@ node {
         }
     }
     stage('Test') {
-        //checkout scm
         docker.image('qnib/pytest').inside {
             sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
         }
         junit 'test-reports/results.xml'
     }
-/*     stage('Deploy') {
-        checkout scm
+    stage('Manual Approval') {
+        input message: 'Lanjutkan ke tahap Deploy?', ok: 'Lanjutkan'
+    }
+    stage('Deploy') {
         docker.image('python:3.9').inside('-u root') {
-            sh 'pip install pyinstaller'
+            sh 'pip show pyinstaller || pip install pyinstaller'
             sh 'pyinstaller --onefile sources/add2vals.py'
             sleep 60
             echo 'Pipeline has finished successfully.'
         }
         archiveArtifacts artifacts: 'dist/add2vals', onlyIfSuccessful: true
-    } */
+    }
 }
