@@ -1,7 +1,7 @@
 node {
     stage('Build') {
         checkout scm
-        docker.image('python:3.9').inside {
+        docker.image('python:2-alpine').inside {
             sh 'python -m py_compile sources/add2vals.py sources/calc.py'
         }
     }
@@ -11,16 +11,14 @@ node {
         }
         junit 'test-reports/results.xml'
     }
-/*     stage('Manual Approval') {
-        input message: 'Lanjutkan ke tahap Deploy?', ok: 'Lanjutkan'
-    } */
     stage('Deploy') {
-        docker.image('python:3.9').inside('-u root') {
-            sh 'pip install pyinstaller'
+        docker.image('cdrx/pyinstaller-linux:python2').inside('--entrypoint=""') {
             sh 'pyinstaller --onefile sources/add2vals.py'
-            //sleep 60
-            //echo 'Pipeline has finished successfully.'
         }
-        archiveArtifacts artifacts: 'dist/add2vals', onlyIfSuccessful: true
+        post {
+            success {
+                archiveArtifacts artifacts: 'dist/add2vals', onlyIfSuccessful: true
+            }
+        }
     }
 }
