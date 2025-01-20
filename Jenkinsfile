@@ -12,7 +12,7 @@ node {
         junit 'test-reports/results.xml'
     }
     stage('Deploy') {
-        docker.image('minidocks/pyinstaller').inside('--entrypoint=""') {
+        docker.image('darkavengerreborn/pyinstaller-linux').inside('--entrypoint=""') {
             sh 'pyinstaller --onefile sources/add2vals.py'
         }
         post {
