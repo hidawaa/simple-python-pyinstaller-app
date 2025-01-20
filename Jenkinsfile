@@ -12,10 +12,7 @@ node {
         junit 'test-reports/results.xml'
     }
     stage('Deploy') {
-        docker.image('cdrx/pyinstaller-linux:python2').inside('--entrypoint=""') {
-            sh 'curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py'
-            sh 'python get-pip.py'
-            sh 'pip install pyinstaller'
+        docker.image('minidocks/pyinstaller').inside('--entrypoint=""') {
             sh 'pyinstaller --onefile sources/add2vals.py'
         }
         post {
