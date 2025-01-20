@@ -1,7 +1,7 @@
 node {
     stage('Build') {
         checkout scm
-        docker.image('python:2-alpine').inside {
+        docker.image('python:3-alpine').inside {
             sh 'python -m py_compile sources/add2vals.py sources/calc.py'
         }
     }
@@ -15,7 +15,7 @@ node {
         input message: 'Lanjutkan ke tahap Deploy?', ok: 'Lanjutkan'
     } */
     stage('Deploy') {
-        docker.image('python:2-alpine').inside('-u root') {
+        docker.image('python:3-alpine').inside('-u root') {
             sh 'pip install pyinstaller'
             sh 'pyinstaller --onefile sources/add2vals.py'
             //sleep 60
