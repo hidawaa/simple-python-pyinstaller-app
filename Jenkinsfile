@@ -1,7 +1,7 @@
 node {
     stage('Build') {
         checkout scm
-        docker.image('python:3-alpine').inside {
+        docker.image('python:3.13.1-alpine3.21').inside {
             sh 'python -m py_compile sources/add2vals.py sources/calc.py'
         }
     }
@@ -15,11 +15,11 @@ node {
         input message: 'Lanjutkan ke tahap Deploy?', ok: 'Lanjutkan'
     } */
     stage('Deploy') {
-        docker.image('python:3-alpine').inside('-u root') {
+        docker.image('python:3.13.1-alpine3.21').inside('-u root') {
             sh 'pip install pyinstaller'
             sh 'pyinstaller --onefile sources/add2vals.py'
             //sleep 60
-            echo 'Pipeline has finished successfully.'
+            //echo 'Pipeline has finished successfully.'
         }
         archiveArtifacts artifacts: 'dist/add2vals', onlyIfSuccessful: true
     }
