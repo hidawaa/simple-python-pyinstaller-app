@@ -12,13 +12,13 @@ node {
         junit 'test-reports/results.xml'
     }
     stage('Deploy') {
-        docker.image('kkatfish/pyinstaller').inside {
+        checkout scm
+        docker.image('python:3.9').inside('-u root') {
+            sh 'pip install pyinstaller'
             sh 'pyinstaller --onefile sources/add2vals.py'
+            sleep 60
+            echo 'Pipeline has finished successfully.'
         }
-        post {
-            success {
-                archiveArtifacts artifacts: 'dist/add2vals', onlyIfSuccessful: true
-            }
-        }
+        archiveArtifacts artifacts: 'dist/add2vals', onlyIfSuccessful: true
     }
 }
