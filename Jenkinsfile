@@ -12,7 +12,7 @@ node {
         junit 'test-reports/results.xml'
     }
     stage('Deploy') {
-        docker.image('cyberuncle/pyinstaller:python3').inside {
+        docker.image('kkatfish/pyinstaller').inside {
             sh 'pyinstaller --onefile sources/add2vals.py'
         }
         post {
