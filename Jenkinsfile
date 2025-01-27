@@ -31,7 +31,7 @@ node {
             sh 'docker build -t hidawaa/simple-python-pyinstaller-app .'
             sh "echo $PASS | docker login -u $USER --password-stdin"
             sh 'docker push hidawaa/simple-python-pyinstaller-app'
-    }
+        }
         archiveArtifacts artifacts: 'dist/add2vals', onlyIfSuccessful: true
     }
 }
