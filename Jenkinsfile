@@ -31,11 +31,9 @@ node {
             sh "echo $PASS | docker login -u $USER --password-stdin"
             sh 'docker push hidawaa/simple-python-pyinstaller-app'
         }
-
-        def dockerrun = 'docker run -p 3000:3000 -d hidawaa/simple-python-pyinstaller-app:latest'
             
         sshagent(['ec2']) {
-                sh "ssh -o StrictHostKeyChecking=no ubuntu@54.242.20.102 ${dockerrun}"
+                sh "ssh -o StrictHostKeyChecking=no ubuntu@54.242.20.102 docker run -p 3000:3000 -d hidawaa/simple-python-pyinstaller-app:latest"
         }
 
         archiveArtifacts artifacts: 'dist/add2vals', onlyIfSuccessful: true
