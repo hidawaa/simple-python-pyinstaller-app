@@ -19,7 +19,6 @@ node {
     }
     
     stage('Deploy') {
-        checkout scm
         docker.image('python:3.9').inside('-u root') {
             sh 'pip install pyinstaller'
             sh 'pyinstaller --onefile sources/add2vals.py'
